@@ -27,7 +27,6 @@ struct ContentView: View {
                     BottomSheetView(title: "Tìm kiếm nâng cao") {
                         AdvancedFilterContent(filterForm: AdvancedFilterForm())
                     }
-                    .presentationDragIndicator(.hidden)
                 }
             }
             .navigationTitle("Tìm kiếm nâng cao")

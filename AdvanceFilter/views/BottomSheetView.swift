@@ -5,6 +5,7 @@ struct BottomSheetView<Content: View>: View {
     let title: String
     let content: Content
     let hideBottomButtons: Bool
+    @State private var detentHeight: CGFloat = 0
 
     init(title: String, hideBottomButtons: Bool = false, @ViewBuilder content: () -> Content) {
         self.title = title
@@ -68,31 +69,66 @@ struct BottomSheetView<Content: View>: View {
     }
 
     var body: some View {
-        VStack {
-            VStack(alignment: .leading, spacing: Constants.s) {
-                HStack {
-                    titleView
+         VStack {
+             VStack(alignment: .leading, spacing: Constants.s) {
+                 HStack {
+                     titleView
 
-                    Spacer()
+                     Spacer()
 
-                    xmarkButton
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.leading, Constants.xs)
-                .padding(.trailing, 4)
+                     xmarkButton
+                 }
+                 .frame(maxWidth: .infinity)
+                 .padding(.leading, Constants.xs)
+                 .padding(.trailing, 4)
 
-                content
+                 content
 
-                Spacer()  // Đẩy nội dung lên trên
-            }
-            .frame(maxWidth: .infinity, alignment: .top)
-            .padding(.horizontal, Constants.xs)
-            .padding(.top, 8)
-            .background(Color.bg.main.tertiary)
+             }
+             .frame(maxWidth: .infinity, alignment: .top)
+             .padding(.horizontal, Constants.xs)
+             .padding(.top, 8)
+             .background(Color.bg.main.tertiary)
 
-            bottomButtons
+             bottomButtons
+         }
+         .frame(maxWidth: .infinity)
+         .readHeight()
+         .onPreferenceChange(HeightPreferenceKey.self) { height in
+             if let height {
+                 self.detentHeight = height
+             }
+         }
+         .presentationDetents([.height(self.detentHeight)])
+    }
+}
+
+struct HeightPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat?
+
+    static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
+        guard let nextValue = nextValue() else { return }
+        value = nextValue
+    }
+}
+
+private struct ReadHeightModifier: ViewModifier {
+    private var sizeView: some View {
+        GeometryReader { geometry in
+            Color.clear.preference(
+                key: HeightPreferenceKey.self,
+                value: geometry.size.height)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    func body(content: Content) -> some View {
+        content.background(sizeView)
+    }
+}
+
+extension View {
+    func readHeight() -> some View {
+        self.modifier(ReadHeightModifier())
     }
 }
 
