@@ -13,9 +13,15 @@ let package = Package(
             targets: ["AdvanceFilter"]
         )
     ],
+    dependencies: [
+        .package(
+            url: "https://github.com/SimformSolutionsPvtLtd/SSDateTimePicker.git",
+            .upToNextMajor(from: "1.0.0"))
+    ],
     targets: [
         .executableTarget(
             name: "AdvanceFilter",
+            dependencies: ["SSDateTimePicker"],
             path: "AdvanceFilter"
         )
     ]

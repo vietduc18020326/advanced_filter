@@ -1,0 +1,16 @@
+PODS:
+  - SSDateTimePicker (1.0.0)
+
+DEPENDENCIES:
+  - SSDateTimePicker
+
+SPEC REPOS:
+  trunk:
+    - SSDateTimePicker
+
+SPEC CHECKSUMS:
+  SSDateTimePicker: 938b46c386778aafb414fbb8adb9d68a0723734c
+
+PODFILE CHECKSUM: 679d761589d09b92f6f6ea2f7a587a493ee5ac33
+
+COCOAPODS: 1.16.2

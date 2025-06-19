@@ -14,17 +14,20 @@ struct UISelectorInput: View {
 
     let title: String
     let isSearch: Bool
+    let itemContent: ((SelectorItem) -> AnyView)?
     var onSelectionChanged: (([SelectorItem]) -> Void)?
 
     init(
         title: String,
         data: BaseSelectorItems,
         isSearch: Bool = false,
+        itemContent: ((SelectorItem) -> AnyView)? = nil,
         onSelectionChanged: (([SelectorItem]) -> Void)? = nil
     ) {
         self.title = title
         self._data = StateObject(wrappedValue: data)
         self.isSearch = isSearch
+        self.itemContent = itemContent
         self.onSelectionChanged = onSelectionChanged
     }
 
@@ -48,17 +51,18 @@ struct UISelectorInput: View {
     }
 
     var selectorBottomSheet: some View {
-        BottomSheetView(title: title) {
+        BottomSheetView(title: title, hideBottomButtons: true) {
             VStack(alignment: .leading, spacing: Constants.s) {
                 if isSearch {
                     UISearchInput(text: $searchText)
+                        .padding(.horizontal, Constants.xs)
                 }
 
                 // List items
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 0) {
                         ForEach(filteredItems) { item in
-                            ItemRow(item: item) {
+                            ItemRow(item: item, itemContent: itemContent) {
                                 data.toggleSelection(for: item.id)
                                 onSelectionChanged?(selectedItems)
                             }
@@ -75,7 +79,7 @@ struct UISelectorInput: View {
         }) {
             HStack(alignment: .center, spacing: Constants.xs) {
                 Text(displayText)
-                    .foregroundColor(.red)
+                    .foregroundColor(.content.main.primary)
 
                 Spacer()
 
@@ -104,22 +108,37 @@ struct UISelectorInput: View {
 private struct ItemRow: View {
     let item: SelectorItem
     let onTap: () -> Void
+    let itemContent: ((SelectorItem) -> AnyView)?
     @State private var isTapped = false
+
+    init(
+        item: SelectorItem,
+        itemContent: ((SelectorItem) -> AnyView)? = nil,
+        onTap: @escaping () -> Void
+    ) {
+        self.item = item
+        self.itemContent = itemContent
+        self.onTap = onTap
+    }
 
     var body: some View {
         HStack(spacing: Constants.s) {
-            if let iconName = item.iconName {
-                Image(systemName: iconName)
-                    .foregroundColor(.content.main.primary)
-            }
+            if let customContent = itemContent {
+                customContent(item)
+            } else {
+                if let iconName = item.iconName {
+                    Image(systemName: iconName)
+                        .foregroundColor(.content.main.primary)
+                }
 
-            VStack(alignment: .leading, spacing: 4) {
-                Text(item.title)
-                    .foregroundColor(.content.main.primary)
-                if let subtitle = item.subtitle {
-                    Text(subtitle)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(item.title)
+                        .foregroundColor(.content.main.primary)
+                    if let subtitle = item.subtitle {
+                        Text(subtitle)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
                 }
             }
 
@@ -130,7 +149,7 @@ private struct ItemRow: View {
                     .foregroundColor(.blue)
             }
         }
-        .padding(.horizontal, Constants.s)
+        .padding(.horizontal, Constants.xs)
         .padding(.vertical, Constants.m)
         .background(item.isSelected ? Color.bg.brand_01.tertiary : Color.white)
         .cornerRadius(8)

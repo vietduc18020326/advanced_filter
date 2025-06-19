@@ -1,0 +1,30 @@
+{
+  "object" : {
+    "artifacts" : [
+
+    ],
+    "dependencies" : [
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "ssdatetimepicker",
+          "kind" : "remoteSourceControl",
+          "location" : "https://github.com/SimformSolutionsPvtLtd/SSDateTimePicker.git",
+          "name" : "SSDateTimePicker"
+        },
+        "state" : {
+          "checkoutState" : {
+            "revision" : "286fbbfd3b33e809f66dff57258cb6b3c507b2af",
+            "version" : "1.0.0"
+          },
+          "name" : "sourceControlCheckout"
+        },
+        "subpath" : "SSDateTimePicker"
+      }
+    ],
+    "prebuilts" : [
+
+    ]
+  },
+  "version" : 7
+}

@@ -4,7 +4,6 @@ extension Color {
     struct bg {
         struct main {
             static let tertiary = Color.bgMainTertiary
-            // Thêm các màu khác tại đây
         }
         
         struct brand_01 {
@@ -18,6 +17,7 @@ extension Color {
         
         struct main {
             static let primary = Color.contentMainPrimary
+            static let tertiary = Color.contentMainTertiary
         }
     }
     

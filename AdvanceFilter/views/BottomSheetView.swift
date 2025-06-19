@@ -4,10 +4,12 @@ struct BottomSheetView<Content: View>: View {
     @Environment(\.dismiss) var dismiss
     let title: String
     let content: Content
+    let hideBottomButtons: Bool
 
-    init(title: String, @ViewBuilder content: () -> Content) {
+    init(title: String, hideBottomButtons: Bool = false, @ViewBuilder content: () -> Content) {
         self.title = title
         self.content = content()
+        self.hideBottomButtons = hideBottomButtons
     }
 
     var titleView: some View {
@@ -24,83 +26,73 @@ struct BottomSheetView<Content: View>: View {
                 .font(.system(size: 20, weight: .medium))
                 .foregroundColor(.content.main.primary)
         }
+        .padding(.all, 10)
     }
 
+    //@ViewBuilder giúp trả về EmptyView ngầm định nếu if không thỏa điều kiện.
+    @ViewBuilder
     var bottomButtons: some View {
-        HStack(spacing: 16) {
-            Button(action: {
-                print("Button tapped")
-            }) {
-                Text("Xoá bộ lọc")
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .foregroundColor(.content.main.primary)
-                    .cornerRadius(8)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .inset(by: 0.5)
-                            .stroke(Color.border.main.primary, lineWidth: 1)
-                    )
-            }
+        if !hideBottomButtons {
+            Group {
+                HStack(spacing: 16) {
+                    Button(action: {
+                        print("Button tapped")
+                    }) {
+                        Text("Xoá bộ lọc")
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .foregroundColor(.content.main.primary)
+                            .cornerRadius(8)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .inset(by: 0.5)
+                                    .stroke(Color.border.main.primary, lineWidth: 1)
+                            )
+                    }
 
-            Button(action: {
-                print("Button tapped")
-            }) {
-                Text("Áp dụng")
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.bg.brand_01.primary)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
+                    Button(action: {
+                        print("Button tapped")
+                    }) {
+                        Text("Áp dụng")
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.bg.brand_01.primary)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
+                    }
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
             }
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
     }
 
     var body: some View {
-        NavigationStack {
-            VStack {
-                VStack(alignment: .leading, spacing: Constants.s) {
-                    content
+        VStack {
+            VStack(alignment: .leading, spacing: Constants.s) {
+                HStack {
+                    titleView
 
-                    Spacer()  // Đẩy nội dung lên trên
+                    Spacer()
+
+                    xmarkButton
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                .padding(.horizontal, Constants.m)
-                .padding(.top, 8)
-                .background(Color.bg.main.tertiary)
+                .frame(maxWidth: .infinity)
+                .padding(.leading, Constants.xs)
+                .padding(.trailing, 4)
 
-                bottomButtons
-            }
-            #if os(iOS)
-                .navigationBarTitleDisplayMode(.inline)
-            #endif
-            .toolbar {
-                // Title ở bên trái
-                #if os(iOS)
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        titleView
-                    }
-                #else
-                    ToolbarItem(placement: .cancellationAction) {
-                        titleView
-                    }
-                #endif
+                content
 
-                // Done button ở bên phải
-                #if os(iOS)
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        xmarkButton
-                    }
-                #else
-                    ToolbarItem(placement: .primaryAction) {
-                        xmarkButton
-                    }
-                #endif
+                Spacer()  // Đẩy nội dung lên trên
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .frame(maxWidth: .infinity, alignment: .top)
+            .padding(.horizontal, Constants.xs)
+            .padding(.top, 8)
+            .background(Color.bg.main.tertiary)
+
+            bottomButtons
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 

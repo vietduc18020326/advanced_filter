@@ -25,9 +25,8 @@ struct ContentView: View {
                 .cornerRadius(10)
                 .sheet(isPresented: $isShowingBottomSheet) {
                     BottomSheetView(title: "Tìm kiếm nâng cao") {
-                        AdvancedFilterContent(filterForm: AdvancedFilterForm(supplierId: "1"))
+                        AdvancedFilterContent(filterForm: AdvancedFilterForm())
                     }
-                    .presentationDetents([.medium, .large])
                     .presentationDragIndicator(.hidden)
                 }
             }

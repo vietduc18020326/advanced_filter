@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		1F8AF5192E0400240010F5B0 /* SSDateTimePicker in Frameworks */ = {isa = PBXBuildFile; productRef = 1F8AF5182E0400240010F5B0 /* SSDateTimePicker */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		1F7C7B032E024FD5002B0E24 /* AdvanceFilter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AdvanceFilter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1F8AF5192E0400240010F5B0 /* SSDateTimePicker in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +70,7 @@
 			);
 			name = AdvanceFilter;
 			packageProductDependencies = (
+				1F8AF5182E0400240010F5B0 /* SSDateTimePicker */,
 			);
 			productName = AdvanceFilter;
 			productReference = 1F7C7B032E024FD5002B0E24 /* AdvanceFilter.app */;
@@ -94,6 +100,9 @@
 			);
 			mainGroup = 1F7C7AFA2E024FD5002B0E24;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				1F8AF5172E0400240010F5B0 /* XCRemoteSwiftPackageReference "SSDateTimePicker" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1F7C7B042E024FD5002B0E24 /* Products */;
 			projectDirPath = "";
@@ -320,6 +329,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		1F8AF5172E0400240010F5B0 /* XCRemoteSwiftPackageReference "SSDateTimePicker" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SimformSolutionsPvtLtd/SSDateTimePicker";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1F8AF5182E0400240010F5B0 /* SSDateTimePicker */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1F8AF5172E0400240010F5B0 /* XCRemoteSwiftPackageReference "SSDateTimePicker" */;
+			productName = SSDateTimePicker;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1F7C7AFB2E024FD5002B0E24 /* Project object */;
 }

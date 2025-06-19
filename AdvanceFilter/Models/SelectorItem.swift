@@ -24,18 +24,22 @@ class SelectorItem: Identifiable {
     /// Optional icon name (SF Symbols)
     let iconName: String?
 
+    var data: Any?
+
     init(
         id: String,
         title: String,
         subtitle: String? = nil,
         isSelected: Bool = false,
         iconName: String? = nil,
+        data: Any? = nil
     ) {
         self.id = id
         self.title = title
         self.subtitle = subtitle
         self.isSelected = isSelected
         self.iconName = iconName
+        self.data = data
     }
 
     /// Toggle the selection state of this item
@@ -70,7 +74,8 @@ extension SelectorItem {
         id: String,
         name: String,
         code: String? = nil,
-        isSelected: Bool = false
+        isSelected: Bool = false,
+        data: Any? = nil
     ) -> SelectorItem {
         return SelectorItem(
             id: id,
@@ -78,6 +83,7 @@ extension SelectorItem {
             subtitle: code,
             isSelected: isSelected,
             iconName: "building.2",
+            data: data
         )
     }
 }

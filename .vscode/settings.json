@@ -9,7 +9,7 @@
     "swift.diagnostics.enableOnEdit": true,
     "swift.path": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
     "swift.swiftEnvironmentVariables": {
-        "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer",
+        "DEVELOPER_DIR": "/Applications/Xcode.app",
         "TOOLCHAINS": "XcodeDefault",
         "TOOLCHAIN_DIR": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain"
     },
@@ -38,5 +38,12 @@
     "editor.suggest.snippetsPreventQuickSuggestions": false,
     "editor.suggest.showKeywords": true,
     "go.toolsManagement.checkForUpdates": "local",
-    "go.useLanguageServer": true
+    "go.useLanguageServer": true,
+    "swift.buildPath": "${workspaceFolder}/build",
+    "swift.targets": [
+        {
+            "name": "AdvanceFilter",
+            "path": "${workspaceFolder}/AdvanceFilter.xcworkspace"
+        }
+    ]
 }
