@@ -5,12 +5,26 @@ struct BottomSheetView<Content: View>: View {
     let title: String
     let content: Content
     let hideBottomButtons: Bool
-    @State private var detentHeight: CGFloat = 0
+    let onLeftButtonTapped: (() -> Void)?
+    let onRightButtonTapped: (() -> Void)?
 
-    init(title: String, hideBottomButtons: Bool = false, @ViewBuilder content: () -> Content) {
+    // MARK: - Local Height Management
+    // Sử dụng local state để track height, không dùng preference keys
+    @State private var detentHeight: CGFloat = 400  // Default fallback height
+    @State private var selectedDetent: PresentationDetent = .height(400)
+
+    init(
+        title: String,
+        hideBottomButtons: Bool = false,
+        onLeftButtonTapped: (() -> Void)? = nil,
+        onRightButtonTapped: (() -> Void)? = nil,
+        @ViewBuilder content: () -> Content
+    ) {
         self.title = title
-        self.content = content()
         self.hideBottomButtons = hideBottomButtons
+        self.content = content()
+        self.onLeftButtonTapped = onLeftButtonTapped
+        self.onRightButtonTapped = onRightButtonTapped
     }
 
     var titleView: some View {
@@ -37,7 +51,7 @@ struct BottomSheetView<Content: View>: View {
             Group {
                 HStack(spacing: 16) {
                     Button(action: {
-                        print("Button tapped")
+                        onLeftButtonTapped?()
                     }) {
                         Text("Xoá bộ lọc")
                             .frame(maxWidth: .infinity)
@@ -52,7 +66,7 @@ struct BottomSheetView<Content: View>: View {
                     }
 
                     Button(action: {
-                        print("Button tapped")
+                        onRightButtonTapped?()
                     }) {
                         Text("Áp dụng")
                             .frame(maxWidth: .infinity)
@@ -69,66 +83,53 @@ struct BottomSheetView<Content: View>: View {
     }
 
     var body: some View {
-         VStack {
-             VStack(alignment: .leading, spacing: Constants.s) {
-                 HStack {
-                     titleView
+        VStack {
+            VStack(alignment: .leading, spacing: Constants.s) {
+                HStack {
+                    titleView
 
-                     Spacer()
+                    Spacer()
 
-                     xmarkButton
-                 }
-                 .frame(maxWidth: .infinity)
-                 .padding(.leading, Constants.xs)
-                 .padding(.trailing, 4)
+                    xmarkButton
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.leading, Constants.xs)
+                .padding(.trailing, 4)
 
-                 content
+                content
 
-             }
-             .frame(maxWidth: .infinity, alignment: .top)
-             .padding(.horizontal, Constants.xs)
-             .padding(.top, 8)
-             .background(Color.bg.main.tertiary)
+            }
+            .frame(maxWidth: .infinity, alignment: .top)
+            .padding(.horizontal, Constants.xs)
+            .padding(.top, 8)
+            .background(Color.bg.main.tertiary)
 
-             bottomButtons
-         }
-         .frame(maxWidth: .infinity)
-         .readHeight()
-         .onPreferenceChange(HeightPreferenceKey.self) { height in
-             if let height {
-                 self.detentHeight = height
-             }
-         }
-         .presentationDetents([.height(self.detentHeight)])
-    }
-}
-
-struct HeightPreferenceKey: PreferenceKey {
-    static var defaultValue: CGFloat?
-
-    static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
-        guard let nextValue = nextValue() else { return }
-        value = nextValue
-    }
-}
-
-private struct ReadHeightModifier: ViewModifier {
-    private var sizeView: some View {
-        GeometryReader { geometry in
-            Color.clear.preference(
-                key: HeightPreferenceKey.self,
-                value: geometry.size.height)
+            bottomButtons
         }
-    }
+        .frame(maxWidth: .infinity)
+        .background(
+            // MARK: - Local Height Measurement
+            // Đo height trực tiếp bằng GeometryReader local, không dùng preference keys
+            GeometryReader { geometry in
+                Color.clear
+                    .onAppear {
+                        let height = geometry.size.height
+                        let validHeight = max(height, 200)  // Min height = 200
+                        let maxHeight = UIScreen.main.bounds.height * 0.9  // Max height = 90% màn hình
+                        let finalHeight = min(validHeight, maxHeight)
 
-    func body(content: Content) -> some View {
-        content.background(sizeView)
-    }
-}
+                        self.detentHeight = finalHeight
+                    }
+                    .onChange(of: geometry.size.height) { newHeight in
+                        let validHeight = max(newHeight, 200)
+                        let maxHeight = UIScreen.main.bounds.height * 0.9
+                        let finalHeight = min(validHeight, maxHeight)
 
-extension View {
-    func readHeight() -> some View {
-        self.modifier(ReadHeightModifier())
+                        self.detentHeight = finalHeight
+                    }
+            }
+        )
+        .presentationDetents([.height(self.detentHeight)], selection: $selectedDetent)
     }
 }
 

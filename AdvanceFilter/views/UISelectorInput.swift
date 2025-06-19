@@ -8,10 +8,19 @@
 import SwiftUI
 
 struct UISelectorInput: View {
+    // MARK: - State Management
     @State private var isShowingBottomSheet = false
     @State private var searchText = ""
-    @StateObject private var data: BaseSelectorItems
 
+    // Lưu trữ chiều cao thực tế của nội dung list
+    // Được tính toán từ VStack ẩn để đảm bảo bottom sheet chỉ scroll khi cần thiết
+    @State private var contentHeight: CGFloat = 0
+
+    // MARK: - Data Management
+    // Sử dụng @ObservedObject để listen to changes từ bên ngoài
+    @ObservedObject var data: BaseSelectorItems
+
+    // MARK: - Configuration
     let title: String
     let isSearch: Bool
     let itemContent: ((SelectorItem) -> AnyView)?
@@ -25,7 +34,7 @@ struct UISelectorInput: View {
         onSelectionChanged: (([SelectorItem]) -> Void)? = nil
     ) {
         self.title = title
-        self._data = StateObject(wrappedValue: data)
+        self.data = data
         self.isSearch = isSearch
         self.itemContent = itemContent
         self.onSelectionChanged = onSelectionChanged
@@ -58,7 +67,8 @@ struct UISelectorInput: View {
                         .padding(.horizontal, Constants.xs)
                 }
 
-                // List items
+                // MARK: - Smart Scrolling System
+                // ScrollView chính để hiển thị list items với LazyVStack (hiệu năng tốt)
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 0) {
                         ForEach(filteredItems) { item in
@@ -69,6 +79,45 @@ struct UISelectorInput: View {
                         }
                     }
                 }
+                // Điều chỉnh maxHeight thông minh:
+                // - Nếu đã có contentHeight (đo từ VStack ẩn): sử dụng height thực tế
+                // - Fallback: ước tính 72px cho mỗi item
+                // - Giới hạn tối đa: 80% chiều cao màn hình để tránh bottom sheet quá cao
+                .frame(
+                    maxHeight: min(
+                        contentHeight > 0 ? contentHeight : CGFloat(filteredItems.count) * 72,
+                        UIScreen.main.bounds.height * 0.8)
+                )
+                .background(
+                    // MARK: - Height Measurement System (Local)
+                    // VStack ẩn để đo chiều cao thực tế của tất cả items nội bộ
+                    VStack(alignment: .leading, spacing: 0) {
+                        ForEach(filteredItems) { item in
+                            ItemRow(item: item, itemContent: itemContent) {
+                                // Empty action vì đây chỉ để đo height, không tương tác
+                            }
+                        }
+                    }
+                    .background(
+                        // GeometryReader để đo kích thước VStack ẩn (local measurement)
+                        GeometryReader { geometry in
+                            Color.clear
+                                .onAppear {
+                                    self.contentHeight = geometry.size.height
+                                }
+                                .onChange(of: geometry.size.height) { newHeight in
+                                    self.contentHeight = newHeight
+                                }
+                                .onChange(of: filteredItems.count) { _ in
+                                    // Update height when items change
+                                    DispatchQueue.main.async {
+                                        self.contentHeight = geometry.size.height
+                                    }
+                                }
+                        }
+                    )
+                    .hidden()  // Ẩn VStack này - chỉ để đo height
+                )
             }
         }
     }
@@ -79,7 +128,7 @@ struct UISelectorInput: View {
         }) {
             HStack(alignment: .center, spacing: Constants.xs) {
                 Text(displayText)
-                    .foregroundColor(.content.main.primary)
+                    .foregroundColor(selectedItems.isEmpty ? .content.placeholder : .content.main.primary)
 
                 Spacer()
 

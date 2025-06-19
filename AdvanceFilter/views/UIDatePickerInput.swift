@@ -55,23 +55,55 @@ struct UIDatePickerInput: View {
                         .stroke(Color.border.main.primary, lineWidth: 1)
                 )
             }
+            
+            .presentationDetents([.large]) // ❌ Chính dòng này khiến nền bị trắng
+            .background(.clear)            // ❌ Không override được background sheet
+        }
+        .fullScreenCover(isPresented: $showDatePicker) {
+            ZStack {
+                Color.black.opacity(0.5).ignoresSafeArea()
 
-            if showDatePicker {
-                Color.black.opacity(0.1)
-                    .ignoresSafeArea()
-
-                SSDatePicker(showDatePicker: $showDatePicker)
-                    .enableDateRangeSelection()
-                    .selectedDateRange(selectedDateRange)
-                    .onDateRangeSelection { dateRange in
-                        selectedDateRange = dateRange
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .edgesIgnoringSafeArea(.all)
+                VStack {
+                    SSDatePicker(showDatePicker: $showDatePicker)
+                        .enableDateRangeSelection()
+                        .selectedDateRange(selectedDateRange)
+                        .onDateRangeSelection { dateRange in
+                            selectedDateRange = dateRange
+                        }
+                        .background(Color.white)
+                        .cornerRadius(16)
+                }
             }
+            .background(Color.clear)
+            .overlay(.clear)
         }
     }
 }
+
+struct TransparentSheet<Content: View>: UIViewControllerRepresentable {
+    let content: () -> Content
+
+    func makeUIViewController(context: Context) -> UIViewController {
+        let controller = UIViewController()
+        controller.view.backgroundColor = .clear
+
+        let hosting = UIHostingController(rootView:
+            content()
+                .background(Color.clear) // ✅ Quan trọng!
+        )
+        hosting.view.backgroundColor = .clear // ✅ Quan trọng!
+        hosting.modalPresentationStyle = .overFullScreen
+
+        DispatchQueue.main.async {
+            controller.present(hosting, animated: true)
+        }
+
+        return controller
+    }
+
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
+}
+
 
 #Preview {
     UIDatePickerInput(title: "Ngày khởi tạo")

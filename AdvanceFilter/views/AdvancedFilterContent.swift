@@ -8,30 +8,41 @@
 import SwiftUICore
 
 struct AdvancedFilterContent: View {
-    let suppliers: Suppliers
-    let services: Services
-    let status: Status
-    let registerType: Register
-    let debitAccounts: DebitAccounts
+    @ObservedObject var filterForm: AdvancedFilterForm
 
     init(filterForm: AdvancedFilterForm) {
-        self.suppliers = Suppliers.create(selectedId: filterForm.supplierId)
-        self.services = Services.create(selectedId: filterForm.serviceId)
-        self.status = Status.create(selectedId: filterForm.status)
-        self.registerType = Register.create(selectedId: filterForm.registerType)
-        self.debitAccounts = DebitAccounts.create(selectedId: filterForm.debit)
+        self.filterForm = filterForm
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            UISelectorInput(title: "Nhà cung cấp", data: suppliers, isSearch: true)
-            UISelectorInput(title: "Dịch vụ", data: services, isSearch: true)
-            UISelectorInput(title: "Trạng thái", data: status)
-            UISelectorInput(title: "Loại đăng ký", data: registerType)
+            UISelectorInput(
+                title: "Nhà cung cấp",
+                data: filterForm.suppliers,
+                isSearch: true
+            )
+
+            UISelectorInput(
+                title: "Dịch vụ",
+                data: filterForm.services,
+                isSearch: true
+            )
+
+            UISelectorInput(
+                title: "Trạng thái",
+                data: filterForm.statusData,
+                isSearch: true
+            )
+
+            UISelectorInput(
+                title: "Loại đăng ký",
+                data: filterForm.registerTypeData,
+                isSearch: true
+            )
 
             UISelectorInput(
                 title: "Tài khoản trích nợ",
-                data: debitAccounts,
+                data: filterForm.debitAccounts,
                 isSearch: true,
                 itemContent: { item in
                     if let account = item.data as? DebitAccountInfo {

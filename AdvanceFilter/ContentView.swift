@@ -12,11 +12,13 @@ import SwiftUI
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var isShowingBottomSheet = false
+    @StateObject private var filterForm = AdvancedFilterForm()
 
     var body: some View {
         NavigationStack {
             VStack {
                 Button("Show Bottom Sheet") {
+                    filterForm.initialize()
                     isShowingBottomSheet.toggle()
                 }
                 .padding()
@@ -24,8 +26,17 @@ struct ContentView: View {
                 .foregroundColor(.white)
                 .cornerRadius(10)
                 .sheet(isPresented: $isShowingBottomSheet) {
-                    BottomSheetView(title: "Tìm kiếm nâng cao") {
-                        AdvancedFilterContent(filterForm: AdvancedFilterForm())
+                    BottomSheetView(
+                        title: "Tìm kiếm nâng cao",
+                        onLeftButtonTapped: {
+                            filterForm.reset()
+                        },
+                        onRightButtonTapped: {
+                            filterForm.apply()
+                            isShowingBottomSheet.toggle()
+                        }
+                    ) {
+                        AdvancedFilterContent(filterForm: filterForm)
                     }
                 }
             }

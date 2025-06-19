@@ -6,7 +6,7 @@
       "args": [],
       "cwd": "${workspaceFolder:advanced_filter}",
       "name": "Debug AdvanceFilter",
-      "program": "${workspaceFolder:advanced_filter}/.build/debug/AdvanceFilter",
+      "program": "${workspaceFolder:advanced_filter}/${workspaceFolder}/build/debug/AdvanceFilter",
       "preLaunchTask": "swift: Build Debug AdvanceFilter"
     },
     {
@@ -15,7 +15,7 @@
       "args": [],
       "cwd": "${workspaceFolder:advanced_filter}",
       "name": "Release AdvanceFilter",
-      "program": "${workspaceFolder:advanced_filter}/.build/release/AdvanceFilter",
+      "program": "${workspaceFolder:advanced_filter}/${workspaceFolder}/build/release/AdvanceFilter",
       "preLaunchTask": "swift: Build Release AdvanceFilter"
     }
   ]

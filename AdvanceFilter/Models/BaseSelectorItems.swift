@@ -83,14 +83,4 @@ class BaseSelectorItems: ObservableObject {
         }
         return items.filter { $0.title.lowercased().contains(query.lowercased()) }
     }
-
-    // Kiểm tra xem có thể chọn thêm item không
-    func canSelectMore() -> Bool {
-        return isMultiSelect || getSelectedItems().isEmpty
-    }
-
-    // Lấy số lượng item tối đa có thể chọn
-    func getMaxSelectCount() -> Int {
-        return isMultiSelect ? items.count : 1
-    }
 }

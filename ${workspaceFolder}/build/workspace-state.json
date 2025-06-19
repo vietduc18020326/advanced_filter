@@ -21,10 +21,7 @@
         },
         "subpath" : "SSDateTimePicker"
       }
-    ],
-    "prebuilts" : [
-
     ]
   },
-  "version" : 7
+  "version" : 6
 }
