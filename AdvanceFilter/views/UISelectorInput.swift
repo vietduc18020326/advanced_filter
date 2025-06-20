@@ -105,22 +105,14 @@ struct UISelectorInput: View {
                                 .onAppear {
                                     self.contentHeight = geometry.size.height
                                 }
-//                                .onChange(of: geometry.size.height) { newHeight in
-//                                    self.contentHeight = newHeight
-//                                    print(2)
-//                                }
-//                                .onChange(of: filteredItems.count) { _ in
-//                                    // Update height when items change
-//                                    DispatchQueue.main.async {
-//                                        self.contentHeight = geometry.size.height
-//                                    }
-//                                    print(1)
-//                                }
                         }
                     )
                     .hidden()  // Ẩn VStack này - chỉ để đo height
                 )
             }
+        }
+        .onDisappear() {
+            searchText = ""
         }
     }
 
@@ -131,11 +123,20 @@ struct UISelectorInput: View {
             HStack(alignment: .center, spacing: Constants.xs) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(title)
-                        .font(.caption)
+                        .font(
+                            Font.custom(Constants.BodyLFontFamily, size: Constants.BodyLFontSize)
+                                .weight(Constants.BodyLFontWeight)
+                        )
                         .foregroundColor(.content.placeholder)
-                    
+
                     if !selectedItems.isEmpty {
                         Text(displayText)
+                            .font(
+                                Font.custom(
+                                    Constants.BodyLFontFamily, size: Constants.BodyLFontSize
+                                )
+                                .weight(Constants.BodyLFontWeight)
+                            )
                             .foregroundColor(.content.main.primary)
                     }
                 }

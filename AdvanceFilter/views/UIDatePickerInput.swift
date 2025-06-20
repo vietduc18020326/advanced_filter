@@ -36,11 +36,22 @@ struct UIDatePickerInput: View {
                 HStack(alignment: .center, spacing: Constants.xs) {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(title)
-                            .font(.caption)
+                            .font(
+                                Font.custom(
+                                    Constants.BodyLFontFamily, size: Constants.BodyLFontSize
+                                )
+                                .weight(Constants.BodyLFontWeight)
+                            )
                             .foregroundColor(.content.placeholder)
 
                         if selectedDateRange != nil {
                             Text(formattedDateRange)
+                                .font(
+                                    Font.custom(
+                                        Constants.BodyLFontFamily, size: Constants.BodyLFontSize
+                                    )
+                                    .weight(Constants.BodyLFontWeight)
+                                )
                                 .foregroundColor(.content.main.primary)
                         }
                     }
@@ -83,31 +94,6 @@ struct UIDatePickerInput: View {
             .overlay(.clear)
         }
     }
-}
-
-struct TransparentSheet<Content: View>: UIViewControllerRepresentable {
-    let content: () -> Content
-
-    func makeUIViewController(context: Context) -> UIViewController {
-        let controller = UIViewController()
-        controller.view.backgroundColor = .clear
-
-        let hosting = UIHostingController(
-            rootView:
-                content()
-                .background(Color.clear)
-        )
-        hosting.view.backgroundColor = .clear
-        hosting.modalPresentationStyle = .overFullScreen
-
-        DispatchQueue.main.async {
-            controller.present(hosting, animated: true)
-        }
-
-        return controller
-    }
-
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
 }
 
 #Preview {

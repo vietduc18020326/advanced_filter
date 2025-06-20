@@ -29,7 +29,10 @@ struct BottomSheetView<Content: View>: View {
 
     var titleView: some View {
         Text(title)
-            .font(.headline)
+            .font(
+                Font.custom(Constants.TitleMFontFamily, size: Constants.TitleMFontSize)
+                    .weight(Constants.TitleMFontWeight)
+            )
             .fontWeight(.semibold)
     }
 
