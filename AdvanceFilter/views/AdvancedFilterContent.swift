@@ -30,14 +30,12 @@ struct AdvancedFilterContent: View {
 
             UISelectorInput(
                 title: "Trạng thái",
-                data: filterForm.statusData,
-                isSearch: true
+                data: filterForm.statusData
             )
 
             UISelectorInput(
                 title: "Loại đăng ký",
-                data: filterForm.registerTypeData,
-                isSearch: true
+                data: filterForm.registerTypeData
             )
 
             UISelectorInput(
@@ -74,7 +72,10 @@ struct AdvancedFilterContent: View {
                 }
             )
 
-            UIDatePickerInput(title: "Ngày khởi tạo")
+            UIDatePickerInput(
+                title: "Ngày khởi tạo",
+                selectedDateRange: $filterForm.initializationTimeRange
+            )
         }
         .padding(.horizontal, Constants.xs)
     }

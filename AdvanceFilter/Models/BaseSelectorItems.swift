@@ -81,6 +81,9 @@ class BaseSelectorItems: ObservableObject {
         if query.isEmpty {
             return items
         }
-        return items.filter { $0.title.lowercased().contains(query.lowercased()) }
+        return items.filter {
+            $0.title.lowercased().removeVietnameseDiacritics().contains(
+                query.lowercased().removeVietnameseDiacritics())
+        }
     }
 }

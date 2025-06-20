@@ -105,15 +105,17 @@ struct UISelectorInput: View {
                                 .onAppear {
                                     self.contentHeight = geometry.size.height
                                 }
-                                .onChange(of: geometry.size.height) { newHeight in
-                                    self.contentHeight = newHeight
-                                }
-                                .onChange(of: filteredItems.count) { _ in
-                                    // Update height when items change
-                                    DispatchQueue.main.async {
-                                        self.contentHeight = geometry.size.height
-                                    }
-                                }
+//                                .onChange(of: geometry.size.height) { newHeight in
+//                                    self.contentHeight = newHeight
+//                                    print(2)
+//                                }
+//                                .onChange(of: filteredItems.count) { _ in
+//                                    // Update height when items change
+//                                    DispatchQueue.main.async {
+//                                        self.contentHeight = geometry.size.height
+//                                    }
+//                                    print(1)
+//                                }
                         }
                     )
                     .hidden()  // Ẩn VStack này - chỉ để đo height
@@ -127,8 +129,16 @@ struct UISelectorInput: View {
             isShowingBottomSheet.toggle()
         }) {
             HStack(alignment: .center, spacing: Constants.xs) {
-                Text(displayText)
-                    .foregroundColor(selectedItems.isEmpty ? .content.placeholder : .content.main.primary)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(title)
+                        .font(.caption)
+                        .foregroundColor(.content.placeholder)
+                    
+                    if !selectedItems.isEmpty {
+                        Text(displayText)
+                            .foregroundColor(.content.main.primary)
+                    }
+                }
 
                 Spacer()
 

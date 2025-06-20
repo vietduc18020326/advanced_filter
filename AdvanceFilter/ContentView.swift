@@ -38,6 +38,9 @@ struct ContentView: View {
                     ) {
                         AdvancedFilterContent(filterForm: filterForm)
                     }
+                    .onDisappear() {
+                        filterForm.reset()
+                    }
                 }
             }
             .navigationTitle("Tìm kiếm nâng cao")
